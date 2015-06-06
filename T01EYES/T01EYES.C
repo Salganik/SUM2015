@@ -3,6 +3,13 @@
  * Создание и поддержка простейшего окна.
  */
 
+#pragma warning(disable: 4244)
+
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <time.h>
+
 #include <windows.h>
 
 /* Имя класса окна */
@@ -24,7 +31,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
  *   (INT) код возврата в операционную систему.
  *   0 - при успехе.
  */
-VOID DrawEyes(HWND hWnd, INT H, INT W);
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     CHAR *CmdLine, INT ShowCmd )
 {
@@ -60,7 +66,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   hWnd =
     CreateWindow(WND_CLASS_NAME,    /* Имя класса окна */
       "Title",                      /* Заголовок окна */
-      WS_OVERLAPPEDWINDOW,          /* Стили окна - окно общего вида */
+      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,          /* Стили окна - окно общего вида */
       CW_USEDEFAULT, CW_USEDEFAULT, /* Позиция окна (x, y) - по умолчанию */
       CW_USEDEFAULT, CW_USEDEFAULT, /* Размеры окна (w, h) - по умолчанию */
       NULL,                         /* Дескриптор родительского окна */
@@ -73,11 +79,54 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   /* Запуск цикла сообщений окна */
   while (GetMessage(&msg, NULL, 0, 0))
+  {
+    /* Обработка сообщений от клавиатуры */
+    TranslateMessage(&msg);
     /* Передача сообщений в функцию окна */
     DispatchMessage(&msg);
+  }
 
-  return 30;
+  return msg.wParam;
 } /* End of 'WinMain' function */
+
+#define sqr(X) ((X) * (X))
+
+/* Рисование глаз.
+ * АРГУМЕНТЫ:
+ *   - дескриптор контекста рисования:
+ *       HDC hDC;
+ *   - размеры окна:
+ *       INT W, H;
+ *   - позиция мыши:
+ *       INT Xc, Yc;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
+ */
+VOID DrawEye( HDC hDC, INT W, INT H, INT Xc, INT Yc )
+{
+  FLOAT
+    len = sqrt(sqr(Xc - W / 2) + sqr(Yc - H / 2)),
+    co = (Xc - W / 2) / len, si = (Yc - H / 2) / len;
+  INT l = 30, x = W / 2 + co * l, y = H / 2 + si * l;
+
+  l = len;
+  if (l > W / 2 - W / 8)
+    l = W / 2 - W / 8;
+  x = W / 2 + co * l;
+  y = H / 2 + si * l;
+
+
+  SelectObject(hDC, GetStockObject(DC_PEN));
+  SelectObject(hDC, GetStockObject(DC_BRUSH));
+  SetDCPenColor(hDC, RGB(0, 0, 0));
+  SetDCBrushColor(hDC, RGB(255, 255, 255));
+  Ellipse(hDC, 0, 0, W, H);
+  SetDCPenColor(hDC, RGB(0, 0, 0));
+  SetDCBrushColor(hDC, RGB(2, 55, 5));
+  Ellipse(hDC, x - W / 8, y - H / 8, x + W / 8, y + H / 8);
+
+}
+/* End of 'DrawEye' function */
+
 
 /* Функция обработки сообщения окна.
  * АРГУМЕНТЫ:
@@ -96,45 +145,122 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
                                WPARAM wParam, LPARAM lParam )
 {
   HDC hDC;
-  static INT w, h;
+  INT x, y, i;
+  CREATESTRUCT *cs;
   POINT pt;
-  
+  PAINTSTRUCT ps;
+  SYSTEMTIME st;
+  CHAR Buf[100];
+  HFONT hFnt, hOldFnt;
+  RECT rc;
+  static INT xx[100], yy[100];
+  static BITMAP bm;
+  static HBITMAP hBm, hBmLogo;
+  static HDC hMemDC, hMemDCLogo;
+  static INT w, h;
+
   switch (Msg)
   {
   case WM_CREATE:
+    cs = (CREATESTRUCT *)lParam;
     SetTimer(hWnd, 111, 50, NULL);
+    /* создаем контекст в памяти */
+    hDC = GetDC(hWnd);
+    hMemDC = CreateCompatibleDC(hDC);
+    hMemDCLogo = CreateCompatibleDC(hDC);
+    ReleaseDC(hWnd, hDC);
+
+    SelectObject(hMemDCLogo, hBmLogo);
     return 0;
+
   case WM_SIZE:
     w = LOWORD(lParam);
     h = HIWORD(lParam);
+
+    /* создаем картинку размером с окно */
+    if (hBm != NULL)
+      DeleteObject(hBm);
+
+    hDC = GetDC(hWnd);
+    hBm = CreateCompatibleBitmap(hDC, w, h);
+    ReleaseDC(hWnd, hDC);
+
+    SelectObject(hMemDC, hBm);
+    SendMessage(hWnd, WM_TIMER, 111, 0);
     return 0;
+
   case WM_TIMER:
+    /* Clear Background */
+    SelectObject(hMemDC, GetStockObject(NULL_PEN));
+    SelectObject(hMemDC, GetStockObject(DC_BRUSH));
+    SetDCBrushColor(hMemDC, RGB(255, 200, 30));
+    Rectangle(hMemDC, 0, 0, w + 1, h + 1);
+
+    StretchBlt(hMemDC, 0, 0, w, h,
+      hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+
+    /* Draw picture */
+    x = w / 2 + 300 * sin(clock() / 1000.0);
     GetCursorPos(&pt);
     ScreenToClient(hWnd, &pt);
-    DrawEyes(hDC, h, w);
+    DrawEye(hMemDC, w / 3, h / 6 * 4, pt.x, pt.y);
+    rc.left = 5;
+    rc.top = 5;
+    rc.right = w - 5;
+    rc.bottom = h - 5;
+    SelectObject(hMemDC, GetStockObject(DC_PEN));
+    SelectObject(hMemDC, GetStockObject(DC_BRUSH));
+    srand(30);
+    InvalidateRect(hWnd, NULL, TRUE);
     return 0;
+
+  case WM_CLOSE:
+    if (MessageBox(hWnd, "Are you shure to exit from program?",
+          "Exit", MB_YESNO | MB_ICONQUESTION) == IDNO)
+      return 0;
+    break;
+
+  case WM_LBUTTONDOWN:
+    SetCapture(hWnd);
+
+    x = LOWORD(lParam);
+    y = HIWORD(lParam);
+    SelectObject(hMemDC, GetStockObject(DC_PEN));
+    SetDCPenColor(hMemDC, RGB(255, 255, 255));
+    MoveToEx(hMemDC, w / 2, h / 2, NULL);
+    LineTo(hMemDC, x, y);
+    return 0;
+
+  case WM_LBUTTONUP:
+    ReleaseCapture();
+    return 0;
+
+  case WM_MOUSEMOVE:
+    x = (SHORT)LOWORD(lParam);
+    y = (SHORT)HIWORD(lParam);
+    if (wParam & MK_LBUTTON)
+    {
+      Ellipse(hMemDC, x - 5, y - 5, x + 5, y + 5);
+    }
+    SelectObject(hMemDC, GetStockObject(DC_PEN));
+    SetDCPenColor(hMemDC, RGB(255, 255, 255));
+    MoveToEx(hMemDC, w / 2, h / 2, NULL);
+    return 0;
+
+  case WM_ERASEBKGND:
+    BitBlt((HDC)wParam, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
+    return 0;
+
   case WM_DESTROY:
+    DeleteDC(hMemDC);
+    DeleteObject(hBm);
+    DeleteDC(hMemDCLogo);
+    DeleteObject(hBmLogo);
     KillTimer(hWnd, 111);
-    PostMessage(hWnd, WM_QUIT, 0, 0);
+    PostQuitMessage(0);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
-}
-VOID DrawEyes(HWND hWnd, INT h, INT w)
-{
-  HDC hDC;
-  hDC = GetDC(hWnd);
-  SelectObject(hDC, GetStockObject(DC_BRUSH));
-  SetDCBrushColor(hDC, RGB(0, 0, 0));
-  Ellipse(hDC, w / 4096, 10, w / 2, h / 2);
-  Ellipse(hDC, w, 10, w / 2, h / 2);
-  ReleaseDC(hWnd, hDC);
-  hDC = GetDC(hWnd);
-  SelectObject(hDC, GetStockObject(DC_BRUSH));
-  SetDCBrushColor(hDC, RGB(255, 255, 255));
-  Ellipse(hDC, w / 8, h / 3, w / 4, h / 4);
-  Ellipse(hDC, w * 7 / 8, h / 3, w * 0.75, h / 4);
-}
+} /* End of 'MyWindowFunc' function */
 
-/* End of 'MyWindowFunc' function */
-/* END OF 'T01FWIN.C' FILE */
+/* END OF 'T01EYES.C' FILE */
