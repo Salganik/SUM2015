@@ -1,15 +1,18 @@
-/* FILE NAME: T04DERM.C
- * PROGAMMER: AS3
- * DATE: 04.06.2015
- * PURPOSE: DETERMINANT VALUE
- */
+/* FILE NAME: T04DETERM.C
+ * PROGRAMMER: AS3
+ * DATE: 08.06.2015
+ * PURPOSE: to calculate determinator.
+*/
+
 #include <stdio.h>
-#include <conio.h>
 
 #define MAX 30
-double A[MAX][MAX];
+
+
+double A[MAX][MAX], sum = 0;
 int p[MAX];
-int N, Parity, SUM = 0;
+int Parity = 0, N = 3;
+   
 
 void Swap( int *A, int *B )
 {
@@ -18,63 +21,72 @@ void Swap( int *A, int *B )
   *A = *B;
   *B = tmp;
 }
+
 void Load( char *FileName )
 {
-  FILE *F;
+  FILE *File;
   int i, j;
 
-  if ((F = fopen(FileName, "r")) != NULL)
+  if ((File = fopen(FileName, "r")) != NULL)
   {
-    fscanf(F, "%d", &N);
+    fscanf(File, "%d", &N);
     for (i = 0; i < N; i++)
       for (j = 0; j < N; j++)
-        fscanf(F, "%lf", &A[i][j]);
-    fclose(F);
+        fscanf(File, "%lf", &A[i][j]);
+
+    fclose(File);
   }
-}
+} /* End of 'Load' function */
 
 void Go( int Pos )
 {
-  int i, PROD = 1;
+  int i, x, save;
 
-  if (Pos == N) 
-  {  
-    for (i = 0; i < N; i++)
-    {  
-      PROD *= A[i][p[i]];
-      if (Parity == 0)  
-        SUM += PROD;
-      else
-      { 
-        SUM -= PROD;
-        Swap(&p[Pos], &p[i]);
-      }
-    }
-    return;    
-  }
-  else
+  if (Pos == N)
   {
-    for (i = Pos; i < N; i++)
+    double prod = 1;
+
+    for (i = 0; i < N; i++)
     {
-      
-      if (Pos != i)
-      {  
-        Parity = !Parity; 
-        Swap(&p[Pos], &p[i]);
-        Go(Pos + 1);  
-        Parity = !Parity;
-        Swap(&p[Pos], &p[i]);
-      }
-    }  
+      prod *= A[i][p[i]];
+
+      if (Parity == 0)
+        sum += prod;
+      else
+        sum -= prod;
+    }
+
+    return;
   }
-}
+
+  save = Parity;
+  Go(Pos + 1);
+  for (i = Pos + 1; i < N; i++)
+  {
+    Parity = !Parity;
+    Swap(&p[Pos], &p[i]);
+    Go(Pos + 1);
+  }
+
+  Parity = save;
+  x = p[Pos];
+
+  for (i = Pos + 1; i < N; i++)
+    p[i - 1] = p[i];
+  p[N - 1] = x;
+} /* End of 'Go' function */
+
 void main( void )
 {
- int i;
+  int i;
+                                                                          
+  Load("m.txt");
+  
+  for (i = 0; i < N; i++)
+    p[i] = i + 1;
+	
+  Load("m.txt");      
+  Go(0);
+  printf("The determinator of this matrix is %lf.\n", sum);
 
- Load("m.txt");
- for (i = 0; i < N; i++)
-   p[i] = i + 1; 
- Go(0);
- printf("%i\n", SUM);
 }
