@@ -1,5 +1,5 @@
 /* FILE: VEC.H
- * PROGRAMMER: DS6
+ * PROGRAMMER: AS3
  * DATE: 06.06.2015
  * PURPOSE: create a library with functions that operate with matrixes, vectors, transformations.
 */
@@ -13,7 +13,7 @@
 #define D2R(A) ((A) * PI / 180.0)  /* degree to radian */
 #define DEGREE2RADIANL 0.01745329251994329576L /* degree to radian for rotation functions */
 /* Multiplyer degree to radian constant */
-long double MultiplierDegree2Radian = DEGREE2RADIANL;
+extern long double MultiplierDegree2Radian;
 
 /* basic float point type */
 typedef double DBL;

@@ -66,7 +66,7 @@
 				AdditionalLibraryDirectories="X:\TGRKIT\LIB;$(DXSDK_DIR)Lib\0x86;$(OPENAL_DIR)Libs;"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -179,7 +179,27 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\anim.c"
+				>
+			</File>
+			<File
+				RelativePath=".\LOADOBJ.C"
+				>
+			</File>
+			<File
 				RelativePath=".\MAIN.C"
+				>
+			</File>
+			<File
+				RelativePath=".\UBALL.C"
+				>
+			</File>
+			<File
+				RelativePath=".\UNIT.C"
+				>
+			</File>
+			<File
+				RelativePath=".\vec.c"
 				>
 			</File>
 		</Filter>
@@ -189,7 +209,23 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\VEC.H"
+				RelativePath=".\anim.h"
+				>
+			</File>
+			<File
+				RelativePath=".\def.h"
+				>
+			</File>
+			<File
+				RelativePath=".\OBJ3D.H"
+				>
+			</File>
+			<File
+				RelativePath=".\units.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vec.h"
 				>
 			</File>
 		</Filter>
