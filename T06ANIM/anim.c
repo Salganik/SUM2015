@@ -4,6 +4,7 @@
  * LAST UPDATE: 08.06.2015
  */
 
+#include <stdio.h>
 #include "anim.h"
 
 /* Системный контекст анимации */

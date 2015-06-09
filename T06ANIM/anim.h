@@ -128,7 +128,8 @@ as3UNIT * AS3_AnimUnitCreate( INT Size );
  */
 VOID AS3_AnimDoExit( VOID );
 VOID AS3_AnimSetPause( BOOL NewPauseFlag );
-
+BOOL ObjLoad( CHAR *FileName );
+VOID ObjDraw( HDC hDC, INT W, INT H );
 #endif /* __ANIM_H_ */
 
 /* END OF 'ANIM.H' FILE */

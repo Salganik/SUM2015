@@ -1,6 +1,6 @@
 /* FILENAME: UBALL.C
  * PROGRAMMER: AS3
- * PURPOSE: Bounce ball unit handle module.
+ * PURPOSE: Bounce cow unit handle module.
  * LAST UPDATE: 08.06.2015
  */
 
