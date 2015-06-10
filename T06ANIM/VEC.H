@@ -3,12 +3,14 @@
  * DATE: 06.06.2015
  * PURPOSE: create a library with functions that operate with matrixes, vectors, transformations.
 */
-#include <windows.h>
 
 #ifndef __VEC_H_
 #define __VEC_H_
 
+#include "def.h"
+
 #include <math.h>
+
 #define PI 3.14159265358979323846  /*define pi*/
 #define D2R(A) ((A) * PI / 180.0)  /* degree to radian */
 #define DEGREE2RADIANL 0.01745329251994329576L /* degree to radian for rotation functions */
@@ -169,9 +171,9 @@ __inline MATR MatrRotateY( DBL AngleDegree )
     fstp cosine /* cos -> cosine */
     fstp sine   /* sin -> sine */
   }
-  M.A[0][0] =  M.A[3][3] = cosine;
-  M.A[3][1] = sine;
-  M.A[1][3] = -sine;
+  M.A[0][0] =  M.A[2][2] = cosine;
+  M.A[2][0] = sine;
+  M.A[0][2] = -sine;
   return M;
 }  
 
@@ -355,6 +357,24 @@ __inline VEC VectorTransform( VEC V, MATR M )
     V.X * M.A[0][2] + V.Y * M.A[1][2] + V.Z * M.A[2][2]);
 } /* End of 'VectorTransform' function */ 
 
+__inline MATR MatrView( VEC Loc, VEC At, VEC Up1 )
+{
+  VEC
+    Dir = VecNormalize(VecSubVec(At, Loc)),
+    Right = VecNormalize(VecCrossVec(Dir, Up1)),
+    Up = VecNormalize(VecCrossVec(Right, Dir));
+  MATR m =
+  {
+    {
+      {               Right.X,                Up.X,              -Dir.X, 0},
+      {               Right.Y,                Up.Y,              -Dir.Y, 0},
+      {               Right.Z,                Up.Z,              -Dir.X, 0},
+      {-VecDotVec(Loc, Right), -VecDotVec(Loc, Up), VecDotVec(Loc, Dir), 1}
+    }
+  };
+
+  return m;
+} /* End of 'MatrView' function */
 
 
 #endif /*__VEC_H_*/

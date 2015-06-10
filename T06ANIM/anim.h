@@ -7,7 +7,7 @@
 #ifndef __ANIM_H_
 #define __ANIM_H_
 
-#include "def.h"
+#include "render.h"
 
 /* Максимальное количество элементов анимации */
 #define AS3_MAX_UNITS 3000
@@ -26,6 +26,8 @@ typedef struct
   /* Массив элементов анимации и их количество */
   as3UNIT *Units[AS3_MAX_UNITS]; 
   INT NumOfUnits;
+
+  /* Подсистема синхронизации */
   DBL
     Time,            /* время в секундах со старта анимации */
     GlobalTime,      /* время -"-, но без паузы */
@@ -35,7 +37,29 @@ typedef struct
   BOOL
     IsPause;         /* флаг паузы */
 
+  /* Подсистема ввода */
+  BYTE
+    Keys[256],       /* Сотояние клавиш клавиатуры и мыши */
+    KeysOld[256],    /* Сотояние клавиш на предыдущем кадре */
+    KeysClick[256];  /* Флаги однократного нажатия */
+  INT
+    MsDeltaX, MsDeltaY, /* Относительные координаты курсора мыши */
+    MsX, MsY,        /* Абсолютные координаты курсора мыши */
+    MsWheel;         /* Состояние колеса мыши */
+  BYTE
+    JButs[32],       /* Сотояние кнопок джойстика */
+    JButsOld[32],    /* Сотояние кнопок джойстика на предыдущем кадре */
+    JButsClick[32],  /* Флаги однократного нажатия кнопок джойстика */
+    JPOV;            /* Переключатель POV - 0..8 */
+  DBL
+    JX, JY, JZ, JR, JU, JV; /* Оси джойстика (-1.0 .. 1.0*/
 } as3ANIM;
+
+/* Глобальная переменная - счетчик прокрутки колеса мыши */
+extern INT AS3_MouseWheel;
+
+/* Системный контекст анимации */
+extern as3ANIM AS3_Anim;
 
 /* Базовые поля объекта анимации:
  * - размер структуры для наследования
@@ -127,9 +151,15 @@ as3UNIT * AS3_AnimUnitCreate( INT Size );
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
  */
 VOID AS3_AnimDoExit( VOID );
+
+/* Функция установки паузы анимации.
+ * АРГУМЕНТЫ:
+ *   - флаг паузы:
+ *       BOOL NewPauseFlag;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
+ */
 VOID AS3_AnimSetPause( BOOL NewPauseFlag );
-BOOL ObjLoad( CHAR *FileName );
-VOID ObjDraw( HDC hDC, INT W, INT H );
+
 #endif /* __ANIM_H_ */
 
 /* END OF 'ANIM.H' FILE */

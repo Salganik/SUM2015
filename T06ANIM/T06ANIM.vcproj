@@ -183,11 +183,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LOADOBJ.C"
+				RelativePath=".\MAIN.C"
 				>
 			</File>
 			<File
-				RelativePath=".\MAIN.C"
+				RelativePath=".\render.c"
 				>
 			</File>
 			<File
@@ -221,7 +221,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\OBJ3D.H"
+				RelativePath=".\render.h"
 				>
 			</File>
 			<File
