@@ -15,6 +15,16 @@
 #define D2R(A) ((A) * PI / 180.0)  /* degree to radian */
 #define DEGREE2RADIANL 0.01745329251994329576L /* degree to radian for rotation functions */
 /* Multiplyer degree to radian constant */
+#define AS3_UNIT_MATR \
+{                    \
+    {                \
+      {1, 0, 0, 0},  \
+      {0, 1, 0, 0},  \
+      {0, 0, 1, 0},  \
+      {0, 0, 0, 1}   \
+    }                \
+}
+
 extern long double MultiplierDegree2Radian;
 
 /* basic float point type */
@@ -370,6 +380,20 @@ __inline MATR MatrView( VEC Loc, VEC At, VEC Up1 )
       {               Right.Y,                Up.Y,              -Dir.Y, 0},
       {               Right.Z,                Up.Z,              -Dir.X, 0},
       {-VecDotVec(Loc, Right), -VecDotVec(Loc, Up), VecDotVec(Loc, Dir), 1}
+    }
+  };
+
+  return m;
+} /* End of 'MatrView' function */
+__inline MATR MatrFrustum( DBL Left, DBL Right, DBL Top, DBL Bottom, DBL Near, DBL Far )
+{
+  MATR m =
+  {
+    {
+      {      2 * Near / (Right - Left),                               0,                              0,  0},
+      {                              0,       2 * Near / (Top - Bottom),                              0,  0},
+      {(Right + Left) / (Right - Left), (Top + Bottom) / (Top - Bottom),   -(Far + Near) / (Far - Near), -1},
+      {                              0,                               0, -2 * Near * Far / (Far - Near),  0}
     }
   };
 
