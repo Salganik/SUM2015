@@ -8,7 +8,7 @@
 
 #include "anim.h" 
 /* смещение по оси Z */
-static INT AS3_GamePadShift = 0;
+INT AS3_GamePadShiftZ = 0;
 
 /* Тип структуры контроля */
 typedef struct tagas3UNIT_CTRL
@@ -59,12 +59,17 @@ static VOID AS3_AnimUnitResponse( as3UNIT_CTRL *Uni, as3ANIM *Ani )
   if (Ani->KeysClick['P'])
     AS3_AnimSetPause(!Ani->IsPause);  
   
-  if (Ani->JButsClick[4])
+  if (Ani->JButsClick[7])
     AS3_AnimFlipFullScreen();
-  if (Ani->JButsClick[5])
+  if (Ani->JButsClick[1])
     AS3_AnimSetPause(!Ani->IsPause);
-  if (Ani->JButs[9])
-    AS3_AnimDoExit(); 
+  if (Ani->JButs[11])
+    AS3_AnimDoExit();
+  if (Ani->JButs[10])
+    AS3_GamePadShiftZ++;
+  if (Ani->JButs[2])
+    AS3_GamePadShiftZ--; 
+ 
  
 } /* End of 'AS3_AnimUnitResponse' function */
 

@@ -1,7 +1,7 @@
 /* FILE: MAIN.C
  * PROGRAMMER: AS3
  * LAST UPDATE: 09.06.2015
- * PURPOSE: output a cow and other animation.
+ * PURPOSE: output animation.
 */
 #pragma warning(disable: 4244) 
 
@@ -129,6 +129,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     return 0;
 
   case WM_TIMER:    
+    //Ellipse(100, 100, 110, 110);
     AS3_AnimRender();
     AS3_AnimCopyFrame();
     return 0; 

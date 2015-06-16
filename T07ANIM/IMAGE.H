@@ -1,7 +1,7 @@
 /* FILENAME: IMAGE.H
  * PROGRAMMER: AS3
  * PURPOSE: Image handle declaration module.
- * LAST UPDATE: 08.06.2015
+ * LAST UPDATE: 15.06.2015
  */
 
 

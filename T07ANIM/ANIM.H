@@ -20,8 +20,8 @@ typedef struct
 {
   HWND hWnd;          /* Окно вывода */
   INT W, H;           /* Размер окна вывода */
-	HGLRC hGLRC;        /* Контекст рендеринга */
   HDC hDC;            /* Контекст вывода */
+  HGLRC hGLRC;        /* Контекст рендеринга */
 
   /* Массив элементов анимации и их количество */
   as3UNIT *Units[AS3_MAX_UNITS];
@@ -54,7 +54,7 @@ typedef struct
 } as3ANIM;
 
 extern as3ANIM AS3_Anim;
-
+extern INT AS3_GamePadShiftZ;
 
 /* Базовые поля объекта анимации:
  * - размер структуры для наследования

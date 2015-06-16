@@ -93,6 +93,11 @@ BOOL AS3_AnimInit( HWND hWnd )
 
   AS3_RndProg = AS3_ShaderLoad("TEST");
 
+  glActiveTexture(GL_TEXTURE0);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
   /* Инициализация таймера */
   QueryPerformanceFrequency(&li);
   TimeFreq = li.QuadPart;
@@ -148,7 +153,7 @@ VOID AS3_AnimResize( INT W, INT H )
   AS3_Anim.W = W;
   AS3_Anim.H = H;  
 
-	glViewport(0, 0, W, H);
+  glViewport(0, 0, W, H);
 
   /* projection parametres correction */
   if (W > H)
@@ -191,21 +196,19 @@ VOID AS3_AnimRender( VOID )
     AS3_Anim.FPS = FrameCounter / ((DBL)(li.QuadPart - TimeFPS) / TimeFreq);
     TimeFPS = li.QuadPart;
     FrameCounter = 0;
-	}
+  }
 
     /* время "прошлого" кадра */
     TimeOld = li.QuadPart;
 
     /*** Обновление ввода ***/
-
     /* Клавиатура */
     GetKeyboardState(AS3_Anim.Keys);
     for (i = 0; i < 256; i++)
-    	AS3_Anim.Keys[i] >>= 7;
+      AS3_Anim.Keys[i] >>= 7;
     for (i = 0; i < 256; i++)
-    	AS3_Anim.KeysClick[i] = AS3_Anim.Keys[i] && !AS3_Anim.KeysOld[i];
-    memcpy(AS3_Anim.KeysOld, AS3_Anim.Keys, sizeof(AS3_Anim.KeysOld));
-
+      AS3_Anim.KeysClick[i] = AS3_Anim.Keys[i] && !AS3_Anim.KeysOld[i];
+    memcpy(AS3_Anim.KeysOld, AS3_Anim.Keys, sizeof(AS3_Anim.KeysOld));  
     /* Мышь */
     /* колесо */
     AS3_Anim.MsWheel = AS3_MouseWheel;
@@ -275,8 +278,7 @@ VOID AS3_AnimRender( VOID )
   glClearColor(0.3, 0.5, 0.7, 1);
   glClearDepth(1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glColorMask(TRUE, TRUE, TRUE, FALSE);
-
+  glColorMask(TRUE, TRUE, TRUE, FALSE); 
 
 
   /* рисование объектов */
@@ -290,11 +292,9 @@ VOID AS3_AnimRender( VOID )
       time = 0;
       AS3_ShaderFree(AS3_RndProg);
       AS3_RndProg = AS3_ShaderLoad("TEST");
-    }
-
-      AS3_RndMatrWorld = MatrIdentity();
-
-      AS3_Anim.Units[i]->Render(AS3_Anim.Units[i], &AS3_Anim);
+    }                                   
+    AS3_RndMatrWorld = MatrIdentity();
+    AS3_Anim.Units[i]->Render(AS3_Anim.Units[i], &AS3_Anim);
   }
   glFinish();
   FrameCounter++;
@@ -306,7 +306,7 @@ VOID AS3_AnimRender( VOID )
  */
 VOID AS3_AnimCopyFrame( VOID )
 {
-	SwapBuffers(AS3_Anim.hDC);
+  SwapBuffers(AS3_Anim.hDC);
 } /* End of 'AS3_AnimCopyFrame' function */
 
 /* Функция добавления в систему объекта анимации.
