@@ -88,5 +88,4 @@ void main( void )
   Load("m.txt");      
   Go(0);
   printf("The determinator of this matrix is %lf.\n", sum);
-
 }
