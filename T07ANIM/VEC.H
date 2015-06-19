@@ -179,9 +179,9 @@ __inline MATR MatrRotateX( DBL AngleDegree )
     fstp cosine /* cos -> cosine */
     fstp sine   /* sin -> sine */
   }
-  M.A[1][1] =  M.A[2][3] = cosine;
+  M.A[1][1] =  M.A[2][2] = cosine;
   M.A[1][2] = sine;
-  M.A[3][2] = -sine;
+  M.A[2][1] = -sine;
   return M;  
 }
 /* rotate the matrix: Y */
@@ -461,7 +461,7 @@ __inline MATR MatrView( VEC Loc, VEC At, VEC Up1 )
     {
       {               Right.X,                Up.X,              -Dir.X, 0},
       {               Right.Y,                Up.Y,              -Dir.Y, 0},
-      {               Right.Z,                Up.Z,              -Dir.X, 0},
+      {               Right.Z,                Up.Z,              -Dir.Z, 0},
       {-VecDotVec(Loc, Right), -VecDotVec(Loc, Up), VecDotVec(Loc, Dir), 1}
     }
   };

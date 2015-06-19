@@ -29,6 +29,7 @@ DBL
 
 /* Шейдер по умолчанию */
 UINT AS3_RndProg;
+UINT AS3_Sun;
 
 typedef struct tagVERTEX
 {

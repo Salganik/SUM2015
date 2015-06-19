@@ -94,6 +94,7 @@ BOOL AS3_AnimInit( HWND hWnd )
   AS3_RndProg = AS3_ShaderLoad("TEST");
 
   glActiveTexture(GL_TEXTURE0);
+  //glActiveTexture(GL_TEXTURE1);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -161,7 +162,7 @@ VOID AS3_AnimResize( INT W, INT H )
   else
     AS3_RndHp = (DBL)H / W * 3, AS3_RndWp = 3;
 
-   AS3_RndMatrProj = MatrFrustum(-AS3_RndWp / 2, AS3_RndWp / 2, -AS3_RndHp / 2, AS3_RndHp / 2, AS3_RndProjDist, 800);
+   AS3_RndMatrProj = MatrFrustum(-AS3_RndWp / 2, AS3_RndWp / 2, -AS3_RndHp / 2, AS3_RndHp / 2, AS3_RndProjDist, 1000000000);
 
 } /* End of 'AS3_AnimResize' function */
 

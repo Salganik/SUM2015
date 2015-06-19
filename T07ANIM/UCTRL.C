@@ -7,6 +7,14 @@
 #include <stdio.h>  
 
 #include "anim.h" 
+/* полключание звука */
+#include <al.h>
+#include <alc.h>
+#include <alut.h>
+
+
+#pragma comment(lib, "alut")
+#pragma comment(lib, "openal32")
 /* смещение по оси Z */
 INT AS3_GamePadShiftZ = 0;
 
@@ -14,6 +22,9 @@ INT AS3_GamePadShiftZ = 0;
 typedef struct tagas3UNIT_CTRL
 {
   AS3_UNIT_BASE_FIELDS; 
+
+  UINT ASrc[2];
+  INT ABuf[2];
 } as3UNIT_CTRL;
 
 /* ‘ункци€ инициализации объекта анимации.
@@ -26,7 +37,31 @@ typedef struct tagas3UNIT_CTRL
  */
 static VOID AS3_AnimUnitInit( as3UNIT_CTRL *Uni, as3ANIM *Ani )
 {
+  INT format;
+  UINT size, freq;
+  VOID *mem;
+  CHAR loop;
   
+  /* »нициализаци€ аудио системы */
+  alutInit(NULL, 0);
+  alGetError();
+  /* создаем буфера */
+  alGenBuffers(2, Uni->ABuf);
+
+  /* загружаем звук в буфер */
+  alutLoadWAVFile("a.wav", &format, &mem, &size, &freq, &loop);
+  alBufferData(Uni->ABuf[0], format, mem, size, freq);
+  alutUnloadWAV(format, mem, size, freq);
+
+  /* создаем источники звука и параметризируем их */
+  alGenSources(2, Uni->ASrc);
+
+  alSourcei(Uni->ASrc[0], AL_BUFFER, Uni->ABuf[0]); /* закрепл€ем буфер за источником */
+  alSourcef(Uni->ASrc[0], AL_PITCH, 1);             /* скорость воспроизведени€: 1.0 - обычна€*/
+  alSourcef(Uni->ASrc[0], AL_GAIN, 0.3);              /* громкость: 1.0 Ц обычна€ */
+  alSourcei(Uni->ASrc[0], AL_LOOPING, 1);           /* флаг повтора: 0 Ц нет, 1 Ц бесконечно */
+
+  alSourcePlay(Uni->ASrc[0]); /* запуск проигрывани€ */
 } /* End of 'AS3_AnimUnitInit' function */
 
 /* ‘ункци€ деинициализации объекта анимации.
@@ -69,8 +104,10 @@ static VOID AS3_AnimUnitResponse( as3UNIT_CTRL *Uni, as3ANIM *Ani )
     AS3_GamePadShiftZ++;
   if (Ani->JButs[2])
     AS3_GamePadShiftZ--; 
- 
- 
+  if (Ani->KeysClick['S'])
+    alSourcePlay(Uni->ASrc[0]);
+  if (Ani->KeysClick['M'])
+    alSourceStopv(1, Uni->ASrc); 
 } /* End of 'AS3_AnimUnitResponse' function */
 
 /* ‘ункци€ построени€ объекта анимации.

@@ -187,22 +187,6 @@
 				>
 			</File>
 			<Filter
-				Name="Units"
-				>
-				<File
-					RelativePath=".\UCTRL.C"
-					>
-				</File>
-				<File
-					RelativePath=".\UMODEL.C"
-					>
-				</File>
-				<File
-					RelativePath=".\UNITS.H"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Animation System"
 				>
 				<File
@@ -262,6 +246,22 @@
 					</File>
 					<File
 						RelativePath=".\VEC.H"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Units"
+					>
+					<File
+						RelativePath=".\UCTRL.C"
+						>
+					</File>
+					<File
+						RelativePath=".\UMODEL.C"
+						>
+					</File>
+					<File
+						RelativePath=".\UNITS.H"
 						>
 					</File>
 				</Filter>

@@ -75,8 +75,6 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   ShowWindow(hWnd, ShowCmd);
   UpdateWindow(hWnd);
-
-  
   AS3_AnimAddUnit(AS3_UnitModelCreate());
   AS3_AnimAddUnit(AS3_UnitControlCreate());
 
@@ -129,11 +127,9 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     return 0;
 
   case WM_TIMER:    
-    //Ellipse(100, 100, 110, 110);
     AS3_AnimRender();
     AS3_AnimCopyFrame();
     return 0; 
-
   case WM_MOUSEWHEEL:
     AS3_MouseWheel += (SHORT)HIWORD(wParam) / WHEEL_DELTA;
     return 0;
